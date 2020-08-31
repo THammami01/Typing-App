@@ -20,14 +20,29 @@ const countdown = () => {
 		document.querySelector(".go-again").addEventListener("click", () => {
 			location.reload()
 		})
-		// document.querySelector(".wpm-result").innerText =
-		// document.querySelector(".characters-result").innerText = text.substring(0, last_correct).length
-		// document.querySelector(".errors-result").innerText = (last_wrong > last_correct ? text.substring(last_correct, last_wrong + 1).length : 0)
+
+		// console.log(current, last_correct, last_wrong)
+
+		if(last_correct == -1 && last_wrong == -1) // last_correct == last_wrong
+			wpm_res = 0, characters_res = 0, errors_res = 0
+		else if(last_correct > last_wrong) {
+			wpm_res = text.substring(0, current - 1).split(" ").length
+			characters_res = last_correct + 1
+			errors_res = 0
+		} else if(last_correct < last_wrong) {
+			wpm_res = text.substring(0, current - 1).split(" ").length
+			characters_res = last_wrong + 1
+			errors_res = characters_res - (last_correct == -1 ? 0 : last_correct + 1)
+		}
+
+		document.querySelector(".wpm-result").innerText = wpm_res
+		document.querySelector(".characters-result").innerText = characters_res
+		document.querySelector(".errors-result").innerText = errors_res
 	}
 }
 
 let idSI
-count = 60
+count = 5
 
 let current = 0
 last_correct = -1
@@ -57,7 +72,6 @@ document.addEventListener("keydown", first_key_down)
 text = document.querySelector(".main").innerText
 
 const update_classes = () => {
-
 	document.querySelector(".main").innerHTML =
 		"<span class=\"correct-letters\">" + text.substring(0, last_correct + 1) + "</span>"
 		+ "<span class=\"wrong-letters\">" + (last_wrong > last_correct ? text.substring(last_correct + 1, last_wrong + 1) : "") + "</span>"
@@ -66,8 +80,7 @@ const update_classes = () => {
 }
 
 const update_main = (e) => {
-	console.log(e.key)
-
+	// console.log(e.key)
 	if(e.key == "Backspace" && current > 0) {
 		current--
 		if(last_correct == current) last_correct--
@@ -89,4 +102,12 @@ const update_main = (e) => {
 
 	if(last_wrong <= last_correct) last_wrong = -1
 
+	// if(current == text.length) count = 0 // in case of cheating
+
+	var curr_el = document.querySelector(".current-letter").getBoundingClientRect();
+	// console.log(window.scrollX,  window.scrollY);
+	// console.log(rect.left, rect.top)
+	// console.log(window.innerHeight, window.innerWidth)
+
+	window.scrollTo(0, curr_el.top + window.scrollY - (window.innerHeight * 0.75))
 }
