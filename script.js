@@ -42,7 +42,7 @@ const countdown = () => {
 }
 
 let idSI
-count = 5
+count = 60
 
 let current = 0
 last_correct = -1
